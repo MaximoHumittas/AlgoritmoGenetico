@@ -1,0 +1,16 @@
+
+Orden ideal de ejecución 
+
+1. Ejecutar main.py
+2. Ejecutar table.py
+3. Ejecutar graph.py
+
+Porque este orden?
+1. Porque el main.py calculará y guardara nuevos datos en 
+   el archivo ./Anexos/CMGO.json que actuará como db y asi 
+   reducir el tiempo de ejecución general del programa
+
+2. Separa la logica en archivos especializados
+
+3. Mayor precición con los datos estadisticos al tener mayor 
+   cantidad de datos que comparar
