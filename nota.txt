@@ -3,7 +3,7 @@ Orden ideal de ejecución
 
 1. Ejecutar main.py
 2. Ejecutar table.py <- por ahora no esta
-3. Ejecutar graph.py
+3. Ejecutar grafica.py
 
 Porque este orden?
 1. Porque el main.py calculará y guardara nuevos datos en 
