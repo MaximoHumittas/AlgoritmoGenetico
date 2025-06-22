@@ -2,7 +2,7 @@
 Orden ideal de ejecución 
 
 1. Ejecutar main.py
-2. Ejecutar table.py <- por ahora esta
+2. Ejecutar table.py <- por ahora no esta
 3. Ejecutar graph.py
 
 Porque este orden?
