@@ -14,7 +14,7 @@ TORNEO_K = 5
 PROB_CRUCE = 0.8
 PROB_MUTACION = 0.1700019
 ELITISMO = True
-ESTANCAMIENTO_MAX = 200
+ESTANCAMIENTO_MAX = 1000
 NUM_RUNS = 10
 
 # ==================== LECTURA DE DATOS ====================
@@ -29,6 +29,7 @@ COORDS = np.array([(v['x'], v['y']) for v in votes], dtype=float)
 # Matriz de distancias euclidianas
 diff_x = COORDS[:, 0][:, None] - COORDS[:, 0]
 diff_y = COORDS[:, 1][:, None] - COORDS[:, 1]
+
 dist_matrix = np.sqrt(diff_x**2 + diff_y**2)
 todos_indices = list(range(N))
 
@@ -134,12 +135,12 @@ def algoritmo_genetico(seed=None):
         else:
             sin_mejora += 1
     tiempo = time() - t0
-    return mejor_aptitud, tiempo, total_iteraciones, mejor_coalicion, historial_fitness
+    return mejor_aptitud, tiempo, generacion, mejor_coalicion, historial_fitness
 
 # =================== MAIN ===================
 def main():
     fitness_list, tiempos, iteraciones, coaliciones, historiales = [], [], [], [], []
-
+    historial_fitness_total = []
     with ProcessPoolExecutor() as executor:
         futures = [executor.submit(algoritmo_genetico, i) for i in range(NUM_RUNS)]
         for f in as_completed(futures):
@@ -149,8 +150,17 @@ def main():
             iteraciones.append(iters)
             coaliciones.append(coal)
             historiales.append(hist)
+            #promedio del historial de fitness
+            historial_fitness_total.append(mean(hist))
+            print("historial_fitness_total:", historial_fitness_total)
+            print(f"Run completed: Fitness={fit:.5f}, Time={t:.2f}s, Iterations={iters}, Coalición={coal[:5]}, hist={hist[:5]}")  # Muestra los primeros 5 elementos de la coalición
+
 
     # Estadísticas generales
+
+    fitness_historial_mean = mean(historial_fitness_total)
+
+    precision_respecto_objetivo = (1 - abs(FITNESS_GOAL - fitness_historial_mean) / FITNESS_GOAL) * 100
     fitness_arr = np.array(fitness_list)
     precision_arr = (FITNESS_GOAL / fitness_arr) * 100
 
@@ -159,7 +169,7 @@ def main():
     print(f"Fitness promedio: {fitness_arr.mean():.5f}")
     print(f"Fitness mínimo (mejor run): {fitness_arr.min():.5f}")
     print(f"Desviación estándar fitness: {fitness_arr.std():.5f}")
-    print(f"Precisión promedio: {precision_arr.mean():.2f} %")
+    print(f"Precisión promedio: {precision_respecto_objetivo:.2f} %")
     print(f"Desviación estándar precisión: {precision_arr.std():.2f} %")
     print(f"Promedio de iteraciones: {np.mean(iteraciones):.2f}")
     print(f"Desviación estándar iteraciones: {np.std(iteraciones):.2f}")
