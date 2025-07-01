@@ -8,13 +8,12 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 
 # =================== CONFIGURACIÓN ===================
 TAM_POBLACION = 38
-TAM_COALICION = 216
+TAM_COALICION = 217
 GENERACIONES_MAX = 15000
 TORNEO_K = 5
 PROB_CRUCE = 0.8
 PROB_MUTACION = 0.1700019
-ELITISMO = True
-ESTANCAMIENTO_MAX = 1000
+ESTANCAMIENTO_MAX = 200
 NUM_RUNS = 10
 
 # ==================== LECTURA DE DATOS ====================
@@ -76,10 +75,10 @@ def cruzar(parent1, parent2):
         if len(set_hijo) >= TAM_COALICION:
             break
         set_hijo.add(gen)
-    if len(set_hijo) < TAM_COALICION:
+    """if len(set_hijo) < TAM_COALICION:
         faltantes = TAM_COALICION - len(set_hijo)
         disponibles = [idx for idx in range(N) if idx not in set_hijo]
-        set_hijo.update(random.sample(disponibles, faltantes))
+        set_hijo.update(random.sample(disponibles, faltantes))"""
     return list(set_hijo)
 
 # =================== MUTACIÓN ===================
@@ -113,8 +112,7 @@ def algoritmo_genetico(seed=None):
     while generacion < GENERACIONES_MAX and sin_mejora < ESTANCAMIENTO_MAX:
         generacion += 1
         nueva_poblacion = []
-        if ELITISMO:
-            nueva_poblacion.append(mejor_coalicion.copy())
+        nueva_poblacion.append(mejor_coalicion.copy())
         while len(nueva_poblacion) < TAM_POBLACION:
             idx_p1 = seleccionar_padre_torneo(aptitudes)
             idx_p2 = seleccionar_padre_torneo(aptitudes)
@@ -152,8 +150,6 @@ def main():
             historiales.append(hist)
             #promedio del historial de fitness
             historial_fitness_total.append(mean(hist))
-            print("historial_fitness_total:", historial_fitness_total)
-            print(f"Run completed: Fitness={fit:.5f}, Time={t:.2f}s, Iterations={iters}, Coalición={coal[:5]}, hist={hist[:5]}")  # Muestra los primeros 5 elementos de la coalición
 
 
     # Estadísticas generales
