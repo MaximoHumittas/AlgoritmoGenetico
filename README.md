@@ -5,6 +5,5 @@
 pip install -r requirements.txt
 
 uso:
-
-ejecutar el main.py (solo modificar configuración inicial) (resultados guardados en "./Anexos/CGMO.json")
-ejecutar el grafica.py
+-ejecutar el main.py (solo modificar configuración inicial) (resultados guardados en "./Anexos/CGMO.json")
+-ejecutar el grafica.py
