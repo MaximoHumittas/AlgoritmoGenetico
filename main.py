@@ -2,18 +2,17 @@ import json
 import numpy as np
 import random
 from time import time
-from numpy.linalg import norm
-from statistics import mean, stdev
+from statistics import mean
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 # =================== CONFIGURACIÓN ===================
 TAM_POBLACION = 38
 TAM_COALICION = 217
 GENERACIONES_MAX = 15000
-TORNEO_K = 5
-PROB_CRUCE = 0.8
+PROB_SELECCION = 0.141
 PROB_MUTACION = 0.1700019
-ESTANCAMIENTO_MAX = 200
+ESTANCAMIENTO_MAX = 2000
+TORNEO_K = 5
 NUM_RUNS = 10
 
 # ==================== LECTURA DE DATOS ====================
@@ -117,7 +116,7 @@ def algoritmo_genetico(seed=None):
             idx_p1 = seleccionar_padre_torneo(aptitudes)
             idx_p2 = seleccionar_padre_torneo(aptitudes)
             padre1, padre2 = poblacion[idx_p1], poblacion[idx_p2]
-            hijo = cruzar(padre1, padre2) if random.random() < PROB_CRUCE else (padre1 if aptitudes[idx_p1] <= aptitudes[idx_p2] else padre2)
+            hijo = cruzar(padre1, padre2) if random.random() < PROB_SELECCION else (padre1 if aptitudes[idx_p1] <= aptitudes[idx_p2] else padre2)
             hijo = mutar(hijo)
             nueva_poblacion.append(hijo)
         poblacion = nueva_poblacion
@@ -160,14 +159,14 @@ def main():
     fitness_arr = np.array(fitness_list)
     precision_arr = (FITNESS_GOAL / fitness_arr) * 100
 
-    print("\n\n===== RESUMEN =====")
+    print("\n\n===== Reporte de Resultados =====")
     print(f"Resultado esperado: {FITNESS_GOAL}")
     print(f"Fitness promedio: {fitness_arr.mean():.5f}")
     print(f"Fitness mínimo (mejor run): {fitness_arr.min():.5f}")
     print(f"Desviación estándar fitness: {fitness_arr.std():.5f}")
-    print(f"Precisión promedio: {precision_respecto_objetivo:.2f} %")
-    print(f"Desviación estándar precisión: {precision_arr.std():.2f} %")
-    print(f"Promedio de iteraciones: {np.mean(iteraciones):.2f}")
+    print(f"Precisión promedio: {precision_respecto_objetivo:.2f} %") # la precision segun el esperado
+    print(f"Desviación estándar precisión: {precision_arr.std():.2f} %") # que tanto cambia la precision +-
+    print(f"Promedio de iteraciones: {np.mean(iteraciones):.2f}") # promedio de generaciones del algoritmo genetico
     print(f"Desviación estándar iteraciones: {np.std(iteraciones):.2f}")
     print(f"Promedio tiempo (s): {np.mean(tiempos):.2f}")
     print(f"Desviación estándar tiempo: {np.std(tiempos):.2f}")
